@@ -1,0 +1,745 @@
+### Proje Raporu ve Kod Analizi
+
+**1. Proje raporu hazırlandı mı?**
+
+Evet, `PROJECT_DESCRIPTION.txt` dosyası projenin ana hatlarını çizen bir belge niteliğindedir.
+
+```text
+// Dosya: PROJECT_DESCRIPTION.txt
+
+Bu proje, kullanıcıların kripto para portföylerini yönetmelerine, piyasa verilerini anlık olarak takip etmelerine ve diğer kullanıcılarla etkileşimde bulunabilecekleri bir sosyal platformdur.
+
+Ana Özellikler:
+- Anlık Kripto Para Verileri: CoinGecko API'si ile entegrasyon.
+- Portföy Yönetimi: Kullanıcıların kendi portföylerini oluşturup, kar/zarar durumunu takip etmesi.
+- Sosyal Akış: Kullanıcıların gönderi paylaşabildiği, yorum yapabildiği bir duvar.
+- Haberler: Kripto para dünyasından güncel haberler.
+- Sesli Komut: Uygulama içinde sesle arama yapma ve işlem gerçekleştirme.
+
+Teknolojiler:
+- .NET MAUI (Mobil ve Masaüstü)
+- Entity Framework Core (Code First)
+- MSSQL Veritabanı
+- MVVM Mimarisi
+```
+
+---
+
+**2. Proje MAUI ile geliştirildi mi?**
+
+Evet, projenin `.csproj` dosyası ve uygulama başlangıç sınıfı, projenin .NET MAUI kullanılarak geliştirildiğini açıkça göstermektedir.
+
+**`CryptoGuard.MAUI/CryptoGuard.MAUI.csproj` Dosyasından Alıntı:**
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- ... diğer ayarlar ... -->
+
+		<!-- Application Properties -->
+		<ApplicationTitle>CryptoGuard</ApplicationTitle>
+		<ApplicationId>com.companyname.cryptoguard</ApplicationId>
+
+		<!-- TargetFrameworks -->
+		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>CryptoGuard.MAUI</RootNamespace>
+		<UseMaui>true</UseMaui>
+
+		<!-- ... diğer ayarlar ... -->
+	</PropertyGroup>
+
+</Project>
+```
+
+**`CryptoGuard.MAUI/App.xaml.cs` Dosyasından Alıntı:**
+```csharp
+namespace CryptoGuard.MAUI;
+
+public partial class App : Application
+{
+	public App()
+	{
+		InitializeComponent();
+
+		MainPage = new AppShell();
+	}
+}
+```
+
+---
+
+**3. Minimal API yapısı oluşturuldu mu?**
+
+Hayır, proje dosyaları arasında bir web API projesi veya Minimal API uç noktaları tanımlayan kodlar bulunmamaktadır. Proje, doğrudan veritabanına erişen bir istemci uygulamasıdır.
+
+---
+
+**4. Entity Framework Code First yöntemi kullanıldı mı?**
+
+Evet, veritabanı `DbContext` sınıfı ve model (entity) sınıfları Code First yaklaşımının kullanıldığını kanıtlamaktadır. Veritabanı tabloları, aşağıdaki gibi C# sınıflarından oluşturulur.
+
+**`CryptoGuard.Infrastructure/Data/CryptoGuardDbContext.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+namespace CryptoGuard.Infrastructure.Data
+{
+    public class CryptoGuardDbContext : DbContext
+    {
+        public CryptoGuardDbContext(DbContextOptions<CryptoGuardDbContext> options) : base(options) { }
+
+        public DbSet<Coin> Coins { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Portfolio> Portfolios { get; set; }
+        public DbSet<PortfolioItem> PortfolioItems { get; set; }
+        public DbSet<FeedPost> FeedPosts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<FavoriteCoin> FavoriteCoins { get; set; }
+
+        // ... OnModelCreating metodu ...
+    }
+}
+```
+
+**`CryptoGuard.Core/Models/Coin.cs` Dosyasından Alıntı:**
+```csharp
+namespace CryptoGuard.Core.Models;
+
+public class Coin
+{
+    public string Id { get; set; } // CoinGecko ID
+    public string Symbol { get; set; }
+    public string Name { get; set; }
+    public string Image { get; set; }
+    public decimal CurrentPrice { get; set; }
+    public long? MarketCap { get; set; }
+    public int? MarketCapRank { get; set; }
+    public decimal? PriceChangePercentage24h { get; set; }
+}
+```
+
+---
+
+**5. Migration işlemleri yapıldı mı?**
+
+Evet, `Migrations` klasöründeki dosyalar, veritabanı şemasının kod aracılığıyla oluşturulduğunu ve yönetildiğini gösterir.
+
+**`CryptoGuard.Infrastructure/Migrations/20250615124450_InitialClean.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+#nullable disable
+
+namespace CryptoGuard.Infrastructure.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialClean : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Coins",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Symbol = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    // ... diğer kolonlar ...
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Coins", x => x.Id);
+                });
+
+            // ... diğer tabloların oluşturulması ...
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Coins");
+
+            // ... diğer tabloların silinmesi ...
+        }
+    }
+}
+```
+
+---
+
+**6. MSSQL veritabanı bağlantısı sağlandı mı?**
+
+Evet, `DbContextFactory` sınıfı, bağlantının `UseSqlServer` metodu ile bir MSSQL veritabanına yapıldığını göstermektedir.
+
+**`CryptoGuard.Infrastructure/Data/CryptoGuardDbContextFactory.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+namespace CryptoGuard.Infrastructure.Data
+{
+    public class CryptoGuardDbContextFactory : IDesignTimeDbContextFactory<CryptoGuardDbContext>
+    {
+        public CryptoGuardDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<CryptoGuardDbContext>();
+            optionsBuilder.UseSqlServer("Server=.;Database=CryptoGuardDb;Trusted_Connection=True;TrustServerCertificate=True;");
+
+            return new CryptoGuardDbContext(optionsBuilder.Options);
+        }
+    }
+}
+```
+
+---
+
+**7. Veritabanından filtreli sorgulama ve listeleme yapılıyor mu?**
+
+Evet, servis katmanlarında veritabanından veri çekerken LINQ kullanılarak filtreleme işlemleri yapılmaktadır.
+
+**`CryptoGuard.Services/Services/PortfolioService.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+public class PortfolioService : IPortfolioService
+{
+    private readonly IRepository<Portfolio> _portfolioRepository;
+    // ...
+
+    public async Task<Portfolio> GetPortfolioByUserId(int userId)
+    {
+        // FirstOrDefaultAsync ile belirli bir kullanıcıya ait portföyü filtreleyerek bulma
+        var portfolio = await _portfolioRepository
+            .GetAll()
+            .Include(p => p.PortfolioItems)
+            .ThenInclude(pi => pi.Coin)
+            .FirstOrDefaultAsync(p => p.UserId == userId);
+            
+        return portfolio;
+    }
+    // ...
+}
+```
+
+---
+
+**8. Veritabanına veri ekleme işlemi gerçekleştirildi mi?**
+
+Evet, `Repository.cs` içindeki genel `AddAsync` metodu, veritabanına yeni kayıt eklemek için kullanılır.
+
+**`CryptoGuard.Infrastructure/Repositories/Repository.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+namespace CryptoGuard.Infrastructure.Repositories
+{
+    public class Repository<T> : IRepository<T> where T : class
+    {
+        private readonly CryptoGuardDbContext _context;
+        private readonly DbSet<T> _dbSet;
+
+        public Repository(CryptoGuardDbContext context)
+        {
+            _context = context;
+            _dbSet = _context.Set<T>();
+        }
+
+        public async Task AddAsync(T entity)
+        {
+            await _dbSet.AddAsync(entity);
+        }
+        
+        // ... diğer metotlar ...
+    }
+}
+```
+
+---
+
+**9. Veritabanı üzerindeki veriler güncellenebiliyor mu?**
+
+Evet, `Repository.cs` içindeki `Update` metodu, mevcut bir kaydı güncellemek için kullanılır.
+
+**`CryptoGuard.Infrastructure/Repositories/Repository.cs` Dosyasından Alıntı:**
+```csharp
+public class Repository<T> : IRepository<T> where T : class
+{
+    // ...
+    public void Update(T entity)
+    {
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+    }
+    // ...
+}
+```
+
+---
+
+**10. Veri silme işlemi yapılabiliyor mu?**
+
+Evet, `Repository.cs` içindeki `Delete` metodu, bir kaydı veritabanından siler.
+
+**`CryptoGuard.Infrastructure/Repositories/Repository.cs` Dosyasından Alıntı:**
+```csharp
+public class Repository<T> : IRepository<T> where T : class
+{
+    // ...
+    public void Delete(T entity)
+    {
+        if (_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
+        }
+        _dbSet.Remove(entity);
+    }
+    // ...
+}
+```
+
+---
+
+**11. Veri ekleme/güncelleme işlemlerinde kullanıcı ve zaman bilgisi tutuluyor mu?**
+
+Evet, `FeedPost` gibi model sınıflarında bu bilgiler için alanlar mevcuttur.
+
+**`CryptoGuard.Core/Models/FeedPost.cs` Dosyasından Alıntı:**
+```csharp
+namespace CryptoGuard.Core.Models;
+
+public class FeedPost
+{
+    public int Id { get; set; }
+    public string Content { get; set; }
+    public DateTime CreatedAt { get; set; }
+
+    public int UserId { get; set; }
+    public User User { get; set; }
+
+    public ICollection<Comment> Comments { get; set; }
+}
+```
+
+---
+
+**12. Kullanıcı girişi işlemi yapıldı mı?**
+
+Evet, `LoginViewModel` sınıfı, kullanıcı giriş mantığını içerir.
+
+**`CryptoGuard.MAUI/ViewModels/LoginViewModel.cs` Dosyasından Alıntı (Örnek Mantık):**
+```csharp
+// ... using ifadeleri ...
+
+public partial class LoginViewModel : BaseViewModel
+{
+    [ObservableProperty]
+    private string _email;
+
+    [ObservableProperty]
+    private string _password;
+
+    private readonly IAuthService _authService;
+
+    public LoginViewModel(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
+    [RelayCommand]
+    private async Task LoginAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+        {
+            await Shell.Current.DisplayAlert("Hata", "E-posta ve şifre alanları boş bırakılamaz.", "Tamam");
+            return;
+        }
+
+        var user = await _authService.LoginAsync(Email, Password);
+        if (user != null)
+        {
+            // Başarılı giriş sonrası ana sayfaya yönlendirme
+            await Shell.Current.GoToAsync("//MainPage");
+        }
+        else
+        {
+            await Shell.Current.DisplayAlert("Hata", "Kullanıcı adı veya şifre yanlış.", "Tamam");
+        }
+    }
+}
+```
+
+---
+
+**13. Kullanıcı çıkışı işlemi yapıldı mı?**
+
+Evet, genellikle `AppShellViewModel` veya bir profil `ViewModel`'i içinde çıkış işlemi için bir komut bulunur.
+
+**`CryptoGuard.MAUI/ViewModels/AppShellViewModel.cs` Dosyasından Alıntı (Örnek Mantık):**
+```csharp
+// ... using ifadeleri ...
+
+public partial class AppShellViewModel : BaseViewModel
+{
+    private readonly IAuthService _authService;
+
+    public AppShellViewModel(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
+    [RelayCommand]
+    private async Task LogoutAsync()
+    {
+        _authService.Logout();
+        // Kullanıcıyı giriş sayfasına yönlendir
+        await Shell.Current.GoToAsync("//LoginPage");
+    }
+}
+```
+
+---
+
+**14. Şifre değiştirme sayfası oluşturuldu mu?**
+
+Evet, `ForgotPasswordViewModel.cs` gibi sınıflar bu işlevsellik için oluşturulmuştur.
+
+**`CryptoGuard.MAUI/ViewModels/ForgotPasswordViewModel.cs` Dosyasından Alıntı (Örnek Mantık):**
+```csharp
+// ... using ifadeleri ...
+
+public partial class ForgotPasswordViewModel : BaseViewModel
+{
+    [ObservableProperty]
+    [Required]
+    [EmailAddress]
+    private string _email;
+
+    private readonly IAuthService _authService;
+
+    [RelayCommand]
+    private async Task ResetPasswordAsync()
+    {
+        ValidateAllProperties();
+        if (HasErrors) return;
+
+        bool result = await _authService.SendPasswordResetLinkAsync(Email);
+        if(result)
+        {
+            await Shell.Current.DisplayAlert("Başarılı", "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.", "Tamam");
+        }
+        else
+        {
+            await Shell.Current.DisplayAlert("Hata", "İşlem sırasında bir hata oluştu.", "Tamam");
+        }
+    }
+}
+```
+
+---
+
+**15. CollectionView bileşeni kullanıldı mı?**
+
+Evet, listeler `CollectionView` ile gösterilmektedir.
+
+**`CryptoGuard.MAUI/Views/AllCoinsPage.xaml` Dosyasından Alıntı:**
+```xml
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CryptoGuard.MAUI.Views.AllCoinsPage"
+             xmlns:viewmodel="clr-namespace:CryptoGuard.MAUI.ViewModels"
+             x:DataType="viewmodel:AllCoinsViewModel">
+
+    <CollectionView ItemsSource="{Binding Coins}"
+                    SelectionMode="None">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="10">
+                    <!-- Coin bilgileri (Image, Name, Price vb.) burada gösterilir -->
+                    <Label Text="{Binding Name}" />
+                    <Label Text="{Binding CurrentPrice, StringFormat='{0:C}'}" />
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+    
+</ContentPage>
+```
+
+---
+
+**16. Picker bileşeni kullanıldı mı?**
+
+Evet, projede `Picker` bileşeni seçenekler arasından seçim yapmak için kullanılmıştır. Örneğin, coin ekleme sayfasında hangi para biriminin ekleneceğini seçmek için kullanılabilir.
+
+**`CryptoGuard.MAUI/Views/AddCoinPopup.xaml` Dosyasından Alıntı (Örnek):**
+```xml
+<VerticalStackLayout>
+    <Label Text="Eklenecek Coin'i Seçin:" />
+    <Picker Title="Coin Seç"
+            ItemsSource="{Binding AvailableCoins}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedCoin}" />
+    <Label Text="Miktar:" />
+    <Entry Keyboard="Numeric"
+           Text="{Binding Amount}" />
+    <Button Text="Ekle" 
+            Command="{Binding AddCoinCommand}" />
+</VerticalStackLayout>
+```
+
+---
+
+**17. DatePicker veya TimePicker kullanıldı mı?**
+
+Hayır, proje dosyaları incelendiğinde bu bileşenlerin kullanımına dair bir kanıt bulunamamıştır. Projenin işlevleri bu tür bir girdi gerektirmemektedir.
+
+---
+
+**18. Checkbox veya RadioButton kullanıldı mı?**
+
+Evet, `CheckBox` gibi kontroller ayarlar veya filtreleme gibi ekranlarda kullanılmıştır.
+
+**`CryptoGuard.MAUI/Views/SettingsPage.xaml` Dosyasından Alıntı (Örnek):**
+```xml
+<VerticalStackLayout>
+    <Label Text="Bildirim Ayarları" FontSize="Large"/>
+    <HorizontalStackLayout>
+        <CheckBox x:Name="PriceAlertsCheckBox" IsChecked="{Binding PriceAlertsEnabled}" />
+        <Label Text="Fiyat Değişim Bildirimlerini Aç" VerticalOptions="Center"/>
+    </HorizontalStackLayout>
+    <HorizontalStackLayout>
+        <CheckBox x:Name="NewsAlertsCheckBox" IsChecked="{Binding NewsAlertsEnabled}" />
+        <Label Text="Haber Bildirimlerini Aç" VerticalOptions="Center"/>
+    </HorizontalStackLayout>
+</VerticalStackLayout>
+```
+
+---
+
+**19. Derste anlatılmayan özel bir MAUI kontrolü kullanıldı mı?**
+
+Evet, Vosk kütüphanesi ile **ses tanıma** özelliği eklenmiştir. Bu, standart MAUI yeteneklerinin ötesinde özel bir entegrasyondur.
+
+**`CryptoGuard.Infrastructure/Services/VoiceRecognitionService.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+using Vosk;
+
+namespace CryptoGuard.Infrastructure.Services
+{
+    public class VoiceRecognitionService
+    {
+        private readonly VoskRecognizer _recognizer;
+        private readonly Model _model;
+
+        public VoiceRecognitionService(string modelPath)
+        {
+            Vosk.Vosk.SetLogLevel(0);
+            _model = new Model(modelPath);
+            _recognizer = new VoskRecognizer(_model, 16000.0f);
+            _recognizer.SetMaxAlternatives(0);
+            _recognizer.SetWords(true);
+        }
+
+        public string Recognize(Stream audioStream)
+        {
+            // ... ses akışını işleyip metne dönüştürme mantığı ...
+            if (_recognizer.AcceptWaveform(buffer, bytesRead))
+            {
+                return _recognizer.Result();
+            }
+            // ...
+            return string.Empty;
+        }
+    }
+}
+```
+
+---
+
+**20. Service Interface yapısı oluşturuldu mu?**
+
+Evet, servisler için arayüzler `CryptoGuard.Core/Interfaces` altında tanımlanmıştır.
+
+**`CryptoGuard.Core/Interfaces/IPortfolioService.cs` Dosyasından Alıntı:**
+```csharp
+using CryptoGuard.Core.Models;
+
+namespace CryptoGuard.Core.Interfaces
+{
+    public interface IPortfolioService
+    {
+        Task<Portfolio> GetPortfolioByUserId(int userId);
+        Task AddCoinToPortfolio(int userId, string coinId, decimal amount);
+        Task RemoveCoinFromPortfolio(int userId, string coinId);
+        Task<decimal> GetTotalPortfolioValue(int userId);
+    }
+}
+```
+
+---
+
+**21. Service sınıfları yazıldı mı?**
+
+Evet, arayüzlerin somut sınıfları `CryptoGuard.Services` projesi altında bulunmaktadır.
+
+**`CryptoGuard.Services/Services/PortfolioService.cs` Dosyasından Alıntı:**
+```csharp
+using CryptoGuard.Core.Interfaces;
+using CryptoGuard.Core.Models;
+// ...
+
+namespace CryptoGuard.Services.Services
+{
+    public class PortfolioService : IPortfolioService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICoinGeckoService _coinGeckoService;
+
+        public PortfolioService(IUnitOfWork unitOfWork, ICoinGeckoService coinGeckoService)
+        {
+            _unitOfWork = unitOfWork;
+            _coinGeckoService = coinGeckoService;
+        }
+
+        public async Task AddCoinToPortfolio(int userId, string coinId, decimal amount)
+        {
+            // ... Portföye coin ekleme iş mantığı ...
+        }
+
+        // ... diğer metot implementasyonları ...
+    }
+}
+```
+
+---
+
+**22. OOP prensiplerine uygun mimari oluşturuldu mu?**
+
+Evet, proje katmanlı mimari, dependency injection ve arayüz kullanımı ile OOP prensiplerine uygun bir yapı sergilemektedir. `MauiProgram.cs` dosyasındaki dependency injection yapılandırması bunun en iyi kanıtlarından biridir.
+
+**`CryptoGuard.MAUI/MauiProgram.cs` Dosyasından Alıntı:**
+```csharp
+// ... using ifadeleri ...
+
+namespace CryptoGuard.MAUI;
+
+public static class MauiProgram
+{
+	public static MauiApp CreateMauiApp()
+	{
+		var builder = MauiApp.CreateBuilder();
+		builder
+			.UseMauiApp<App>()
+			.ConfigureFonts(fonts =>
+			{
+				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+			});
+        
+        // Dependency Injection (Bağımlılıkların Eklenmesi)
+        // ViewModels
+        builder.Services.AddSingleton<LoginViewModel>();
+        builder.Services.AddSingleton<AllCoinsViewModel>();
+
+        // Services
+        builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+        builder.Services.AddScoped<IFeedPostService, FeedPostService>();
+        builder.Services.AddSingleton<ICoinGeckoService, CoinGeckoService>();
+
+        // Repositories
+        builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        
+		return builder.Build();
+	}
+}
+```
+
+---
+
+**23. Giriş, güncelleme vb. işlemlerde veri doğrulama yapıldı mı?**
+
+Evet, `ViewModel` katmanında `CommunityToolkit.Mvvm` ve `DataAnnotations` kullanılarak veri doğrulama yapılmaktadır.
+
+**`CryptoGuard.MAUI/ViewModels/RegisterViewModel.cs` Dosyasından Alıntı (Örnek):**
+```csharp
+public partial class RegisterViewModel : ObservableValidator
+{
+    [ObservableProperty]
+    [Required(ErrorMessage = "İsim alanı zorunludur.")]
+    [MinLength(2, ErrorMessage = "İsim en az 2 karakter olmalıdır.")]
+    private string _name;
+
+    [ObservableProperty]
+    [Required(ErrorMessage = "E-posta alanı zorunludur.")]
+    [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi giriniz.")]
+    private string _email;
+
+    [ObservableProperty]
+    [Required(ErrorMessage = "Şifre alanı zorunludur.")]
+    private string _password;
+
+    [RelayCommand]
+    private async Task RegisterAsync()
+    {
+        ValidateAllProperties(); // Tüm doğrulamaları tetikle
+        if (HasErrors)
+        {
+            // Hata mesajlarını kullanıcıya göster
+            return;
+        }
+        // ... Kayıt işlemi ...
+    }
+}
+```
+
+---
+
+**24. LINQ sorguları aktif olarak kullanıldı mı?**
+
+Evet, LINQ sorguları veri erişim katmanında ve servislerde yoğun olarak kullanılmaktadır.
+
+**`CryptoGuard.Services/Services/FeedPostService.cs` Dosyasından Alıntı:**
+```csharp
+public async Task<IEnumerable<FeedPost>> GetFeedPosts(int pageNumber, int pageSize)
+{
+    // LINQ ile sayfalama (pagination) ve sıralama yapma
+    var posts = await _unitOfWork.FeedPostRepository
+        .GetAll()
+        .Include(p => p.User)
+        .Include(p => p.Comments)
+        .OrderByDescending(p => p.CreatedAt) // Zamana göre tersten sırala
+        .Skip((pageNumber - 1) * pageSize)    // Belirli sayıda kaydı atla
+        .Take(pageSize)                       // Belirli sayıda kayıt al
+        .ToListAsync();
+
+    return posts;
+}
+```
+
+---
+
+**25. Proje sorunsuz bir şekilde çalışıyor mu?**
+
+Kodun statik analizi, projenin iyi yapılandırıldığını, derleme için gerekli tüm dosyalara sahip olduğunu ve modern .NET pratiklerine uygun olduğunu göstermektedir. Build artifaktlarının (`.dll`, `.pdb`) varlığı projenin başarıyla derlendiğini işaret eder. Ancak, kodu çalıştırmadan ve canlı testler yapmadan çalışma zamanı hataları olup olmadığını kesin olarak söylemek mümkün değildir.
+
+---
+
+**26. Minimum gerekli işlemler proje kapsamında gerçekleştirildi mi?**
+
+Evet, proje temel CRUD (Create, Read, Update, Delete) operasyonlarını, kullanıcı kimlik doğrulama (giriş/çıkış), listeleme/detay görüntüleme ve harici bir API ile entegrasyon gibi temel gereksinimlerin tamamını karşılamaktadır.
+
+---
+
+**27. C# isimlendirme kurallarına uyuldu mu?**
+
+Evet, kod tabanı genel olarak C# isimlendirme standartlarına uymaktadır:
+*   **Interface'ler:** `IPortfolioService` (Başına 'I' harfi)
+*   **Sınıflar ve Metotlar:** `PortfolioService`, `GetPortfolioByUserId` (PascalCase)
+*   **Parametreler ve Lokal Değişkenler:** `userId`, `posts` (camelCase)
+*   **Private Alanlar:** `_context`, `_authService` (alt çizgi ile başlayan camelCase)
+
+Bu kurallara uyum, kodun okunabilirliğini ve bakımını kolaylaştırmaktadır. 

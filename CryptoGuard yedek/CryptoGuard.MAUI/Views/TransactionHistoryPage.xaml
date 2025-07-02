@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CryptoGuard.MAUI.ViewModels"
+             xmlns:conv="clr-namespace:CryptoGuard.MAUI.Converters"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             x:Class="CryptoGuard.MAUI.Views.TransactionHistoryPage"
+             Title="İşlem Geçmişi"
+             BackgroundColor="#181A20">
+    <ContentPage.Resources>
+        <conv:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
+        <conv:TransactionTypeToAmountColorConverter x:Key="TransactionTypeToAmountColorConverter" />
+    </ContentPage.Resources>
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,*" Padding="18,24,18,18" RowSpacing="18">
+            <!-- Başlık -->
+            <Label Grid.Row="0" Text="İşlem Geçmişi" FontSize="22" FontAttributes="Bold" TextColor="#b4befe" HorizontalOptions="Center"/>
+            <!-- Tarih Filtreleme Bölümü -->
+            <Frame Grid.Row="1" BackgroundColor="#2A2D3A" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Tarih Filtreleme" FontSize="16" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <HorizontalStackLayout Spacing="10">
+                        <CheckBox IsChecked="{Binding IsDateFilterEnabled}" Color="#b4befe"/>
+                        <Label Text="Tarih aralığı kullan" TextColor="#fff" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <Grid ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="10" IsVisible="{Binding IsDateFilterEnabled}">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Başlangıç Tarihi" TextColor="#b4befe" FontSize="12"/>
+                            <DatePicker Date="{Binding StartDate}" TextColor="#fff" BackgroundColor="#3A3D4A" Format="dd/MM/yyyy"/>
+                            <TimePicker Time="{Binding StartTime}" TextColor="#fff" BackgroundColor="#3A3D4A" Format="HH:mm"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Bitiş Tarihi" TextColor="#b4befe" FontSize="12"/>
+                            <DatePicker Date="{Binding EndDate}" TextColor="#fff" BackgroundColor="#3A3D4A" Format="dd/MM/yyyy"/>
+                            <TimePicker Time="{Binding EndTime}" TextColor="#fff" BackgroundColor="#3A3D4A" Format="HH:mm"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Spacing="5" VerticalOptions="End">
+                            <Button Text="Filtrele" 
+                                    Command="{Binding ApplyDateFilterCommand}"
+                                    BackgroundColor="#4CAF50" 
+                                    TextColor="White" 
+                                    CornerRadius="5"
+                                    Padding="10,5"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="3" Spacing="5" VerticalOptions="End">
+                            <Button Text="Temizle" 
+                                    Command="{Binding ClearFiltersCommand}"
+                                    BackgroundColor="#A020F0" 
+                                    TextColor="White" 
+                                    CornerRadius="5"
+                                    Padding="10,5"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <!-- İşlem Geçmişi Tablosu -->
+            <ScrollView Grid.Row="2" Orientation="Both" HorizontalScrollBarVisibility="Always" VerticalScrollBarVisibility="Always">
+                <Grid ColumnSpacing="12" RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Başlıklar -->
+                    <Label Grid.Row="0" Grid.Column="0" Text="Zaman" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="Sembol" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <Label Grid.Row="0" Grid.Column="2" Text="İşlem" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <Label Grid.Row="0" Grid.Column="3" Text="Miktar" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <Label Grid.Row="0" Grid.Column="4" Text="Gerçekleşen Kar/Zarar" FontAttributes="Bold" TextColor="#b4befe"/>
+                    <!-- İşlem Satırları -->
+                    <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="5" Spacing="8">
+                        <CollectionView ItemsSource="{Binding FilteredTransactions}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnSpacing="12" RowSpacing="8" Padding="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="180"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Text="{Binding TransactionDate, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}" TextColor="#fff"/>
+                                        <Label Grid.Column="1" Text="{Binding CoinSymbol}" TextColor="#fff"/>
+                                        <Label Grid.Column="2" Text="{Binding IslemText}" TextColor="#fff"/>
+                                        <Label Grid.Column="3" Text="{Binding Quantity, StringFormat='{0:N4}'}" 
+                                               TextColor="{Binding TransactionType, Converter={StaticResource TransactionTypeToAmountColorConverter}}"/>
+                                        <Label Grid.Column="4" Text="{Binding RealizedProfitDisplay}" TextColor="#fff"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Grid>
+            </ScrollView>
+        </Grid>
+    </ScrollView>
+</ContentPage> 

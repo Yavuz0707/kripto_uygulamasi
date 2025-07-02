@@ -1,0 +1,12 @@
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\bin\Debug\net9.0\CryptoGuard.Core.deps.json
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\bin\Debug\net9.0\CryptoGuard.Core.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\bin\Debug\net9.0\CryptoGuard.Core.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.csproj.AssemblyReference.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.AssemblyInfoInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.AssemblyInfo.cs
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.csproj.CoreCompileInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\refint\CryptoGuard.Core.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\CryptoGuard.Core.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Core\obj\Debug\net9.0\ref\CryptoGuard.Core.dll

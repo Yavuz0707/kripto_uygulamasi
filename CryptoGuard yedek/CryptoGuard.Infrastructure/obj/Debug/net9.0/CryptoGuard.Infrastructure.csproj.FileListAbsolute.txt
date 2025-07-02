@@ -1,0 +1,17 @@
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Infrastructure.deps.json
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Infrastructure.runtimeconfig.json
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Infrastructure.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Infrastructure.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Core.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\bin\Debug\net9.0\CryptoGuard.Core.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.AssemblyInfo.cs
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGu.EA67981E.Up2Date
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\refint\CryptoGuard.Infrastructure.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\CryptoGuard.Infrastructure.genruntimeconfig.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Infrastructure\obj\Debug\net9.0\ref\CryptoGuard.Infrastructure.dll

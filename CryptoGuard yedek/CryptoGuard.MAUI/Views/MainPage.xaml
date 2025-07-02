@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CryptoGuard.MAUI.ViewModels"
+             xmlns:models="clr-namespace:CryptoGuard.Core.Models;assembly=CryptoGuard.Core"
+             xmlns:conv="clr-namespace:CryptoGuard.MAUI.Converters"
+             x:Class="CryptoGuard.MAUI.Views.MainPage"
+             x:DataType="viewmodels:MainViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <conv:FavoriteIconConverter x:Key="FavoriteIconConverter" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+            <!-- Profil ve Hoşgeldin -->
+            <HorizontalStackLayout Grid.Row="0" Spacing="16" VerticalOptions="Start" Margin="0,0,0,10">
+                <Frame WidthRequest="96" HeightRequest="96" CornerRadius="48" BorderColor="{DynamicResource AccentColor}" Padding="0" HasShadow="False" VerticalOptions="Center">
+                    <Image Source="{Binding ProfilePhoto, TargetNullValue='user.png'}" Aspect="AspectFill" WidthRequest="96" HeightRequest="96"/>
+                </Frame>
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Label Text="{Binding Username, StringFormat='Hoşgeldiniz, {0}'}" FontSize="20" FontAttributes="Bold" TextColor="{DynamicResource TextColor}"/>
+                    <Label Text="{Binding PortfolioTotalValueDisplay}" FontSize="14" TextColor="{DynamicResource SecondaryTextColor}"/>
+                    <HorizontalStackLayout>
+                        <Label Text="Değişim: " FontSize="14" TextColor="{DynamicResource SecondaryTextColor}"/>
+                        <Label Text="{Binding PortfolioChangePercentDisplay}" FontSize="14" TextColor="{Binding PortfolioChangeColor}"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <!-- Favori Coinler -->
+            <VerticalStackLayout Grid.Row="1" Spacing="10">
+                <Label Text="Favori Coinler" FontAttributes="Bold" FontSize="18" />
+                <CollectionView x:Name="FavoriteCoinsCollection" ItemsSource="{Binding FavoriteCoins}" HeightRequest="80" SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Coin">
+                            <Frame WidthRequest="120" HeightRequest="70" Padding="8,4" Margin="4,0" BackgroundColor="#232136" CornerRadius="14" BorderColor="#FFD700" HasShadow="True">
+                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center" HeightRequest="54">
+                                    <Image Source="{Binding ImageUrl}" WidthRequest="28" HeightRequest="28" VerticalOptions="Center"/>
+                                    <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" TextColor="White" FontSize="13"/>
+                                            <Label Text="{Binding Symbol}" FontSize="12" TextColor="#b8b8ff"/>
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding CurrentPrice, StringFormat='${0:N2}'}" TextColor="#FFD700" FontAttributes="Bold" FontSize="13"/>
+                                    </VerticalStackLayout>
+                                    <ImageButton Source="{Binding IsFavorite, Converter={StaticResource FavoriteIconConverter}}"
+                                                 Command="{Binding ToggleFavoriteCommand}"
+                                                 CommandParameter="{Binding .}"
+                                                 WidthRequest="24" HeightRequest="24" BackgroundColor="Transparent" HorizontalOptions="End"/>
+                                </HorizontalStackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.ShowCoinDetailCommand, Source={x:Reference FavoriteCoinsCollection}}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Top Coins -->
+            <VerticalStackLayout Grid.Row="2" Spacing="10">
+                <Label Text="Top Coins" FontAttributes="Bold" FontSize="18" />
+                <CollectionView x:Name="TopCoinsCollection" ItemsSource="{Binding TopCoins}" HeightRequest="80" SelectionMode="Single">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Coin">
+                            <Frame WidthRequest="120" HeightRequest="70" Padding="8,4" Margin="4,0" BackgroundColor="#232136" CornerRadius="14" BorderColor="#7c3aed" HasShadow="True">
+                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center" HeightRequest="54">
+                                    <Image Source="{Binding ImageUrl}" WidthRequest="28" HeightRequest="28" VerticalOptions="Center"/>
+                                    <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" TextColor="White" FontSize="13"/>
+                                            <Label Text="{Binding Symbol}" FontSize="12" TextColor="#b8b8ff"/>
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding CurrentPrice, StringFormat='${0:N2}'}" TextColor="#a78bfa" FontAttributes="Bold" FontSize="13"/>
+                                    </VerticalStackLayout>
+                                </HorizontalStackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.ShowCoinDetailCommand, Source={x:Reference TopCoinsCollection}}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Portföy ve Fiyat Alarmları gibi diğer alanlar -->
+            <VerticalStackLayout Grid.Row="3" Spacing="10">
+                <Label Text="Portföy" FontAttributes="Bold" FontSize="18" />
+                <CollectionView x:Name="PortfolioCoinsCollection" ItemsSource="{Binding PortfolioItems}" HeightRequest="220" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#232136" CornerRadius="14" Padding="12" HasShadow="False" Margin="0,0,0,8">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding CoinName}" FontSize="16" TextColor="#fff" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Quantity, StringFormat='Miktar: {0:N4}'}" FontSize="14" TextColor="#b4befe"/>
+                                    <Label Text="{Binding BuyPrice, StringFormat='Alış: {0:N4}'}" FontSize="14" TextColor="#b4befe"/>
+                                    <Label Text="{Binding CurrentPrice, StringFormat='Güncel: {0:N4}'}" FontSize="14" TextColor="#7cfa7c"/>
+                                    <Label Text="{Binding CurrentValue, StringFormat='Değer: {0:N2}'}" FontSize="14" TextColor="#f9d923"/>
+                                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                                        <Button Text="Düzenle" Command="{Binding BindingContext.PortfolioVM.EditCoinCommand, Source={x:Reference PortfolioCoinsCollection}}" CommandParameter="{Binding .}" BackgroundColor="#7c3aed" TextColor="White" CornerRadius="8" />
+                                        <Button Text="Sil" Command="{Binding BindingContext.PortfolioVM.DeleteCoinCommand, Source={x:Reference PortfolioCoinsCollection}}" CommandParameter="{Binding .}" BackgroundColor="#f38ba8" TextColor="White" CornerRadius="8" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Fiyat Alarmları" FontAttributes="Bold" FontSize="18" Margin="0,20,0,0" />
+                <CollectionView ItemsSource="{Binding UserAlerts}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:PriceAlert">
+                            <Frame Padding="10" Margin="5" BackgroundColor="#232136" CornerRadius="14" BorderColor="#7c3aed" HasShadow="True">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Coin.Name}" FontAttributes="Bold" TextColor="White" FontSize="16" />
+                                    <Label Text="{Binding TargetPrice, StringFormat='${0:F2}'}" TextColor="#a78bfa" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding IsTriggered, StringFormat='Tetiklendi: {0}'}" TextColor="#b8b8ff" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Button Text="Tüm Coinler" Command="{Binding GoToAllCoinsCommand}" BackgroundColor="#7c3aed" TextColor="White" CornerRadius="10" Margin="0,0,0,10" />
+                <Button Text="İşlem Geçmişi" Command="{Binding GoToTransactionHistoryCommand}" BackgroundColor="#A020F0" TextColor="White" CornerRadius="10" Margin="0,0,0,10" />
+            </VerticalStackLayout>
+
+            <ActivityIndicator Grid.Row="4"
+                              IsRunning="{Binding IsBusy}"
+                              IsVisible="{Binding IsBusy}"
+                              HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource IsStringNullOrEmptyConverter}}" />
+
+            <!-- Sesli Asistan Overlay (alt-orta) -->
+            <Grid
+                Grid.RowSpan="5"
+                HorizontalOptions="Center"
+                VerticalOptions="End"
+                Margin="0,0,0,30"
+                IsVisible="{Binding VoiceAssistant.IsListening}">
+                <Image Source="siri_logo.png" 
+                       WidthRequest="90" 
+                       HeightRequest="90" 
+                       Opacity="0.85">
+                    <Image.Triggers>
+                        <DataTrigger TargetType="Image"
+                                    Binding="{Binding VoiceAssistant.IsListening}"
+                                    Value="True">
+                            <Setter Property="Rotation" Value="360"/>
+                            <Setter Property="Scale" Value="1.1"/>
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+                <Label Text="{Binding VoiceAssistant.AssistantStatus}" 
+                       TextColor="#7c3aed" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="End" 
+                       Margin="0,100,0,0"/>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage> 

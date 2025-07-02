@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="CryptoGuard.MAUI.Views.UserSearchPopup"
+               x:Name="UserSearchPopupRoot"
+               Size="{OnPlatform Android='0.95,0.8', iOS='0.95,0.8', WinUI='0.5,0.7'}">
+    <Frame BackgroundColor="#23272f" CornerRadius="24" HasShadow="True" Padding="0" WidthRequest="380" VerticalOptions="Center" HorizontalOptions="Center">
+        <VerticalStackLayout Spacing="0">
+            <!-- Arama kutusu ve Clear all butonu -->
+            <Grid ColumnDefinitions="*,Auto" Padding="18,18,18,0">
+                <Entry Placeholder="Search user..." Text="{Binding UserSearchText, Mode=TwoWay}" FontSize="16" BackgroundColor="#181825" TextColor="#fff" PlaceholderColor="#b4befe" HeightRequest="38" Margin="0,0,8,0" VerticalOptions="Center" HorizontalOptions="Fill" Keyboard="Text"/>
+                <Button Text="Clear all" Command="{Binding ClearUserSearchCommand}" FontSize="14" TextColor="#7c3aed" BackgroundColor="Transparent" Padding="0"/>
+            </Grid>
+            <Label Text="Recent" FontAttributes="Bold" TextColor="#b4befe" Padding="18,8,0,0" FontSize="15"/>
+            <!-- Sonuçlar -->
+            <CollectionView ItemsSource="{Binding UserSearchResults}" SelectionMode="None" Margin="0,0,0,0" HeightRequest="320">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="48,*,auto" Padding="12,0" HeightRequest="54">
+                            <Frame WidthRequest="38" HeightRequest="38" CornerRadius="19" Padding="0" HasShadow="False" BorderColor="#393950" VerticalOptions="Center">
+                                <Image Source="{Binding ProfilePhoto}" Aspect="AspectFill" WidthRequest="38" HeightRequest="38"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                <Label Text="{Binding Username}" FontSize="15" FontAttributes="Bold" TextColor="#fff"/>
+                                <Label Text="@{Binding Username}" FontSize="13" TextColor="#a6adc8"/>
+                            </VerticalStackLayout>
+                            <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="24" HeightRequest="24" BackgroundColor="Transparent" Command="{Binding BindingContext.RemoveUserFromSearchCommand, Source={x:Reference UserSearchPopupRoot}}" CommandParameter="{Binding .}"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenUserProfileCommand, Source={x:Reference UserSearchPopupRoot}}" CommandParameter="{Binding Username}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup> 

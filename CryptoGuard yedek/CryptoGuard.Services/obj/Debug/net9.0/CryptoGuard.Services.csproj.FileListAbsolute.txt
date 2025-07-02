@@ -1,0 +1,17 @@
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Services.deps.json
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Services.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Services.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Core.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Infrastructure.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Core.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\bin\Debug\net9.0\CryptoGuard.Infrastructure.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.csproj.AssemblyReference.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.AssemblyInfoInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.AssemblyInfo.cs
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.csproj.CoreCompileInputs.cache
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGu.60663387.Up2Date
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\refint\CryptoGuard.Services.dll
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\CryptoGuard.Services.pdb
+C:\Users\sukru\OneDrive\Desktop\ÖDEV\CryptoGuard\CryptoGuard.Services\obj\Debug\net9.0\ref\CryptoGuard.Services.dll
